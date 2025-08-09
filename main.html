@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบทดสอบวิศวกรรมซอฟต์แวร์</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'TH Sarabun New', sans-serif;
+        }
+        .answer-option {
+            transition: background-color 0.3s;
+        }
+        .correct {
+            background-color: #10b981 !important;
+            color: white;
+        }
+        .incorrect {
+            background-color: #ef4444 !important;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+        <h1 class="text-2xl font-bold text-center mb-4">แบบทดสอบวิศวกรรมซอฟต์แวร์</h1>
+        <p class="text-center mb-4">ตอบคำถาม 50 ข้อเกี่ยวกับวิศวกรรมซอฟต์แวร์ (บทที่ 1–7)</p>
+        <p id="score" class="text-center mb-4">คะแนน: 0/50</p>
+        <div id="question-container" class="mb-4">
+            <p id="question-text" class="text-lg font-semibold"></p>
+            <div id="options" class="mt-4 space-y-2"></div>
+        </div>
+        <div id="feedback" class="mt-4 text-center"></div>
+        <div class="flex justify-between mt-4">
+            <button id="prev-button" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 disabled:bg-gray-300" disabled>ข้อก่อนหน้า</button>
+            <button id="next-button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 hidden">ข้อถัดไป</button>
+        </div>
+        <p id="progress" class="text-center mt-4"></p>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "ข้อใดคือเป้าหมายหลักของการพัฒนาซอฟต์แวร์?",
+                options: [
+                    "เพื่อให้ซอฟต์แวร์มีขนาดเล็กที่สุด",
+                    "เพื่อให้ได้ซอฟต์แวร์ที่มีประสิทธิภาพ, ถูกต้อง, เชื่อถือได้, และปลอดภัย",
+                    "เพื่อให้ซอฟต์แวร์สามารถทำงานได้บนระบบปฏิบัติการเดียว",
+                    "เพื่อให้ใช้เวลาในการพัฒนาน้อยที่สุดโดยไม่คำนึงถึงคุณภาพ"
+                ],
+                correct: 1
+            },
+            {
+                question: "ซอฟต์แวร์ (Software) ประกอบด้วยอะไรบ้าง?",
+                options: [
+                    "ชุดคำสั่ง, โครงสร้างข้อมูล และเอกสารที่เกี่ยวข้อง",
+                    "ฮาร์ดแวร์คอมพิวเตอร์และอุปกรณ์ต่อพ่วง",
+                    "เฉพาะโปรแกรมที่ผู้ใช้มองเห็นและโต้ตอบได้",
+                    "ระบบเครือข่ายและสายสัญญาณ"
+                ],
+                correct: 0
+            },
+            {
+                question: "ข้อใดคือซอฟต์แวร์ระบบ (System Software)?",
+                options: [
+                    "โปรแกรมประมวลผลคำ (Word Processing)",
+                    "ระบบปฏิบัติการ (Operating System)",
+                    "โปรแกรมเว็บเบราว์เซอร์ (Web Browser)",
+                    "โปรแกรมสำหรับเล่นเกม"
+                ],
+                correct: 1
+            },
+            {
+                question: "ข้อใด ไม่ใช่ สาเหตุที่ทำให้โครงการซอฟต์แวร์ล้มเหลว?",
+                options: [
+                    "ความต้องการของลูกค้าไม่ชัดเจน",
+                    "การวางแผนโครงการที่ดีและรัดกุม",
+                    "การส่งมอบงานล่าช้ากว่ากำหนด",
+                    "ใช้งบประมาณเกินที่กำหนดไว้"
+                ],
+                correct: 1
+            },
+            {
+                question: "แนวทางปฏิบัติของวิศวกรรมซอฟต์แวร์แบ่งได้เป็นกี่แนวทางหลัก?",
+                options: [
+                    "1 แนวทาง คือ แนวทางเชิงโครงสร้าง",
+                    "2 แนวทาง คือ แนวทางเชิงโครงสร้าง และแนวทางเชิงวัตถุ",
+                    "3 แนวทาง คือ แนวทางเชิงโครงสร้าง, เชิงวัตถุ และเชิงฟังก์ชัน",
+                    "4 แนวทาง คือ แนวทางเชิงเส้น, วนซ้ำ, วิวัฒนาการ และขนาน"
+                ],
+                correct: 1
+            },
+            {
+                question: "กิจกรรมพื้นฐาน 4 อย่างของ Software Process ตามนิยามของ Sommerville คืออะไร?",
+                options: [
+                    "Planning, Executing, Monitoring, Closing",
+                    "Software specification, Software design and implementation, Software validation, Software evolution",
+                    "Requirement, Coding, Testing, Deployment",
+                    "Analysis, Design, Development, Maintenance"
+                ],
+                correct: 1
+            },
+            {
+                question: "การไหลของกระบวนการแบบใดที่ต้องทำกิจกรรมหนึ่งให้เสร็จสิ้นก่อน ถึงจะเริ่มกิจกรรมถัดไปได้?",
+                options: [
+                    "การไหลของกระบวนการเชิงเส้น (Linear Process Flow)",
+                    "การไหลของกระบวนการแบบวนซ้ำ (Iterative Process Flow)",
+                    "การไหลของกระบวนการแบบวิวัฒนาการ (Evolutionary Process Flow)",
+                    "การไหลของกระบวนการแบบขนาน (Parallel Process Flow)"
+                ],
+                correct: 0
+            },
+            {
+                question: "แบบจำลองน้ำตก (Waterfall Model) มีลักษณะเด่นอย่างไร?",
+                options: [
+                    "มีความยืดหยุ่นสูง สามารถเปลี่ยนแปลงความต้องการได้ตลอดเวลา",
+                    "เหมาะสำหรับโครงการที่ไม่ทราบขอบเขตของงานที่ชัดเจน",
+                    "แต่ละขั้นตอนต้องเสร็จสมบูรณ์ก่อนจะเริ่มขั้นตอนถัดไป และไม่ย้อนกลับ",
+                    "เน้นการสร้างต้นแบบ (Prototype) ให้ลูกค้าตรวจสอบก่อน"
+                ],
+                correct: 2
+            },
+            {
+                question: "แบบจำลองเวียนก้นหอย (Spiral Model) เหมาะสำหรับโครงการประเภทใด?",
+                options: [
+                    "โครงการขนาดเล็กและไม่มีความเสี่ยง",
+                    "โครงการที่ต้องการความรวดเร็วและมีเวลาจำกัด",
+                    "โครงการขนาดใหญ่และมีความเสี่ยงสูง",
+                    "โครงการที่ไม่ต้องการเอกสารประกอบ"
+                ],
+                correct: 2
+            },
+            {
+                question: "ข้อใดคือ 4 เฟสของแบบจำลอง Rational Unified Process (RUP)?",
+                options: [
+                    "Requirement, Design, Coding, Test",
+                    "Inception, Elaboration, Construction, Transition",
+                    "Planning, Analysis, Implementation, Maintenance",
+                    "Communication, Modeling, Deployment, Feedback"
+                ],
+                correct: 1
+            },
+            {
+                question: "จากภาพ Test Pyramid ข้อใดอยู่ชั้นบนสุดซึ่งมี Integration มากที่สุดและช้าที่สุด?",
+                options: [
+                    "Unit Tests",
+                    "Integration Tests",
+                    "UI Tests",
+                    "Manual Tests"
+                ],
+                correct: 2
+            },
+            {
+                question: "ข้อใดคือความแตกต่างที่สำคัญของทีมในโมเดล Agile และ Waterfall?",
+                options: [
+                    "ทีม Agile ทำงานแยกส่วนกันตามแผนก แต่ทีม Waterfall ทำงานร่วมกัน",
+                    "ทีม Agile เป็นแบบ Cross-functional และมีอำนาจตัดสินใจด้วยตนเอง แต่ทีม Waterfall ทำงานแยกส่วนตามแผนก",
+                    "ทีม Agile ต้องรอการตัดสินใจจากผู้จัดการอาวุโสเสมอ",
+                    "ทีม Waterfall มีความยืดหยุ่นในการเปลี่ยนแปลงแผนงานมากกว่า"
+                ],
+                correct: 1
+            },
+            {
+                question: "ข้อใดคือหนึ่งในสี่ข้อของ Manifesto ของ Agile?",
+                options: [
+                    "เน้นกระบวนการและเครื่องมือ มากกว่าการสื่อสารระหว่างบุคคล",
+                    "เน้นการทำเอกสารที่ครอบคลุม มากกว่าการทำซอฟต์แวร์ที่ใช้งานได้",
+                    "เน้นการร่วมมือกับลูกค้า มากกว่าการต่อรองสัญญา",
+                    "เน้นการทำตามแผนที่วางไว้ มากกว่าการตอบสนองต่อการเปลี่ยนแปลง"
+                ],
+                correct: 2
+            },
+            {
+                question: "User Story ประกอบด้วยส่วนใดบ้าง?",
+                options: [
+                    "Role, Goal, Benefit",
+                    "Task, Time, Cost",
+                    "Feature, Function, Requirement",
+                    "User, System, Database"
+                ],
+                correct: 0
+            },
+            {
+                question: "Scrum คืออะไร?",
+                options: [
+                    "กรอบการทำงาน (Framework) ที่นำแนวคิด Agile มาปฏิบัติ",
+                    "ชื่อของซอฟต์แวร์บริหารโครงการ",
+                    "ภาษาโปรแกรมสำหรับการพัฒนาแบบ Agile",
+                    "ชื่อตำแหน่งของผู้จัดการโครงการในทีม Agile"
+                ],
+                correct: 0
+            },
+            {
+                question: "กิจกรรมใดใน Scrum ที่จัดขึ้นทุกวันเพื่ออัปเดตความคืบหน้าของทีมพัฒนา?",
+                options: [
+                    "Sprint Planning",
+                    "Sprint Review",
+                    "Sprint Retrospective",
+                    "Daily Scrum"
+                ],
+                correct: 3
+            },
+            {
+                question: "ข้อใดคือตำแหน่งในทีม Scrum?",
+                options: [
+                    "Project Manager, Team Lead, Developer",
+                    "Product Owner, Scrum Master, Developer",
+                    "Business Analyst, System Analyst, Programmer",
+                    "Client, Manager, Tester"
+                ],
+                correct: 1
+            },
+            {
+                question: "เป้าหมายหลักของการบริหารโครงการซอฟต์แวร์คืออะไร?",
+                options: [
+                    "เพื่อให้โครงการเสร็จเร็วที่สุด โดยไม่คำนึงถึงงบประมาณ",
+                    "เพื่อให้โครงการมีคุณภาพสูง เสร็จในเวลาที่กำหนด และอยู่ในงบประมาณ",
+                    "เพื่อให้ทีมพัฒนาได้เรียนรู้เทคโนโลยีใหม่ๆ",
+                    "เพื่อสร้างเอกสารโครงการให้ได้มากที่สุด"
+                ],
+                correct: 1
+            },
+            {
+                question: "ข้อใดคือ 3 องค์ความรู้หลักใน Project Management?",
+                options: [
+                    "Time, Cost, Scope",
+                    "People, Process, Business Environment",
+                    "Hardware, Software, Network",
+                    "Planning, Executing, Closing"
+                ],
+                correct: 0
+            },
+            {
+                question: "เอกสาร Project Charter มีไว้เพื่อวัตถุประสงค์ใด?",
+                options: [
+                    "เพื่อบันทึกโค้ดโปรแกรมทั้งหมด",
+                    "เพื่อระบุขอบเขตงาน, วัตถุประสงค์ และผู้เกี่ยวข้องในโครงการ",
+                    "เพื่อใช้เป็นคู่มือการใช้งานซอฟต์แวร์",
+                    "เพื่อติดตามข้อผิดพลาด (Bugs) ที่เกิดขึ้น"
+                ],
+                correct: 1
+            },
+            {
+                question: "ใน RACI Matrix ตัวอักษร 'A' (Accountable) หมายถึงอะไร?",
+                options: [
+                    "ผู้ลงมือทำงานหลัก",
+                    "ผู้ให้คำปรึกษา",
+                    "ผู้มีอำนาจตัดสินใจและรับผิดชอบผลลัพธ์สุดท้าย",
+                    "ผู้ที่ต้องรับรู้ข้อมูล"
+                ],
+                correct: 2
+            },
+            {
+                question: "Work Breakdown Structure (WBS) คืออะไร?",
+                options: [
+                    "แผนภาพแสดงโครงสร้างองค์กร",
+                    "เทคนิคการแตกย่อยเนื้องานจากชิ้นใหญ่ให้เล็กลง",
+                    "ตารางงบประมาณโครงการ",
+                    "แผนการสื่อสารในโครงการ"
+                ],
+                correct: 1
+            },
+            {
+                question: "ข้อแตกต่างระหว่าง Milestone และ Deliverable คืออะไร?",
+                options: [
+                    "Milestone คือเป้าหมายของกิจกรรม, Deliverable คือผลลัพธ์ที่ส่งมอบให้ลูกค้า",
+                    "Milestone คือผลลัพธ์, Deliverable คือเป้าหมาย",
+                    "ทั้งสองคำมีความหมายเหมือนกัน",
+                    "Milestone ใช้วัดงบประมาณ, Deliverable ใช้วัดเวลา"
+                ],
+                correct: 0
+            },
+            {
+                question: "PERT/CPM เป็นเทคนิคที่ใช้สำหรับทำอะไร?",
+                options: [
+                    "ประเมินคุณภาพซอฟต์แวร์",
+                    "จัดการความขัดแย้งในทีม",
+                    "วางแผนและควบคุมตารางเวลาของโครงการ",
+                    "ออกแบบฐานข้อมูล"
+                ],
+                correct: 2
+            },
+            {
+                question: "วิศวกรรมความต้องการ (Requirement Engineering) คืออะไร?",
+                options: [
+                    "กระบวนการเขียนโค้ดโปรแกรมตามความต้องการ",
+                    "กระบวนการที่ทำให้เข้าใจและได้มาซึ่งความต้องการของลูกค้าอย่างถูกต้อง",
+                    "กระบวนการทดสอบซอฟต์แวร์",
+                    "กระบวนการออกแบบส่วนต่อประสานกับผู้ใช้"
+                ],
+                correct: 1
+            },
+            {
+                question: "ข้อใดคือความแตกต่างระหว่าง Functional และ Non-Functional Requirement?",
+                options: [
+                    "Functional บอกว่าระบบ 'ทำอะไร', Non-Functional บอกว่าระบบ 'เป็นอย่างไร'",
+                    "Functional เกี่ยวข้องกับหน้าตาของระบบ, Non-Functional เกี่ยวข้องกับการทำงาน",
+                    "Functional มาจากผู้ใช้, Non-Functional มาจากผู้พัฒนา",
+                    "ไม่มีข้อแตกต่างที่ชัดเจน"
+                ],
+                correct: 0
+            },
+            {
+                question: "'ระบบต้องสามารถทำงานได้บนหลายระบบปฏิบัติการ' เป็นความต้องการประเภทใด?",
+                options: [
+                    "Functional Requirement",
+                    "Portability Requirement (เป็นส่วนหนึ่งของ Non-Functional)",
+                    "Domain Requirement",
+                    "User Requirement"
+                ],
+                correct: 1
+            },
+            {
+                question: "ข้อใดคือขั้นตอนในกระบวนการวิศวกรรมความต้องการ?",
+                options: [
+                    "Elicitation, Analysis, Specification, Validation",
+                    "Design, Coding, Testing, Deployment",
+                    "Planning, Execution, Monitoring, Closing",
+                    "Brainstorming, Prototyping, Development, Launch"
+                ],
+                correct: 0
+            },
+            {
+                question: "เอกสาร SRS ย่อมาจากอะไร?",
+                options: [
+                    "System Review Summary",
+                    "Software Requirement Specification",
+                    "System Requirement Sheet",
+                    "Software Resource Standard"
+                ],
+                correct: 1
+            },
+            {
+                question: "การตรวจสอบว่าความต้องการที่รวบรวมมานั้นสมบูรณ์และไม่ขัดแย้งกัน อยู่ในขั้นตอนใด?",
+                options: [
+                    "Requirement Elicitation",
+                    "Requirement Specification",
+                    "Requirement Validation",
+                    "Requirement Management"
+                ],
+                correct: 2
+            },
+            {
+                question: "ข้อใดคือจุดประสงค์หลักของการสร้างแบบจำลอง (Model) ในการวิเคราะห์ซอฟต์แวร์?",
+                options: [
+                    "เพื่อให้ลูกค้าสับสน",
+                    "เพื่อให้ทีมพัฒนาและลูกค้ามีความเข้าใจตรงกัน",
+                    "เพื่อใช้ในการคำนวณงบประมาณเท่านั้น",
+                    "เพื่อทำให้โครงการดูซับซ้อนขึ้น"
+                ],
+                correct: 1
+            },
+            {
+                question: "แบบจำลองใดที่ใช้อธิบายโครงสร้างข้อมูลทั้งหมดในระบบ?",
+                options: [
+                    "Process Model",
+                    "Data Model",
+                    "Behavioral Model",
+                    "Context Model"
+                ],
+                correct: 1
+            },
+            {
+                question: "ER Diagram ใช้สำหรับทำอะไร?",
+                options: [
+                    "แสดงการไหลของข้อมูลในระบบ",
+                    "แสดงความสัมพันธ์ระหว่างข้อมูล (Entity)",
+                    "แสดงขั้นตอนการทำงานของโปรแกรม",
+                    "แสดงโครงสร้างสถาปัตยกรรมของฮาร์ดแวร์"
+                ],
+                correct: 1
+            },
+            {
+                question: "สัญลักษณ์สี่เหลี่ยมผืนผ้า (Rectangle) ใน Data Flow Diagram (DFD) หมายถึงอะไร?",
+                options: [
+                    "Process",
+                    "Data Store",
+                    "External Agent",
+                    "Data Flow"
+                ],
+                correct: 2
+            },
+            {
+                question: "DFD ระดับ 0 หรือ Context Diagram มีลักษณะพิเศษอย่างไร?",
+                options: [
+                    "มี Process เพียง 1 Process คือตัวระบบทั้งหมด",
+                    "แสดง Data Store ทั้งหมดในระบบ",
+                    "มีความละเอียดสูงสุด",
+                    "ไม่แสดง External Entities"
+                ],
+                correct: 0
+            },
+            {
+                question: "UML ย่อมาจากอะไร?",
+                options: [
+                    "Universal Modeling Language",
+                    "Unified Modeling Language",
+                    "User Model Logic",
+                    "Unique Model Library"
+                ],
+                correct: 1
+            },
+            {
+                question: "แบบจำลองใดใน UML ที่ใช้แสดงกิจกรรมที่ผู้ใช้สามารถกระทำกับระบบได้?",
+                options: [
+                    "Class Diagram",
+                    "Sequence Diagram",
+                    "Use Case Diagram",
+                    "State Diagram"
+                ],
+                correct: 2
+            },
+            {
+                question: "BPMN ใช้สำหรับสร้างแบบจำลองอะไร?",
+                options: [
+                    "โครงสร้างฐานข้อมูล",
+                    "กระบวนการทางธุรกิจ (Business Process)",
+                    "ลำดับการเรียกใช้ฟังก์ชัน",
+                    "ส่วนประกอบของซอฟต์แวร์"
+                ],
+                correct: 1
+            },
+            {
+                question: "การออกแบบซอฟต์แวร์ที่ดีควรมีลักษณะอย่างไร?",
+                options: [
+                    "มีความซับซ้อนสูงและแก้ไขได้ยาก",
+                    "มีความยืดหยุ่น, จัดการง่าย, และบำรุงรักษาง่าย",
+                    "ผูกติดกับฮาร์ดแวร์ชนิดเดียว",
+                    "ไม่สามารถนำกลับมาใช้ใหม่ได้"
+                ],
+                correct: 1
+            },
+            {
+                question: "จากพีระมิด Design Model การออกแบบส่วนใดอยู่เป็นฐานล่างสุด?",
+                options: [
+                    "Component-Level Design",
+                    "Interface Design",
+                    "Architectural Design",
+                    "Data/Class Design"
+                ],
+                correct: 2
+            },
+            {
+                question: "ข้อใดเป็นปัจจัยด้านคุณภาพซอฟต์แวร์ที่เกี่ยวข้องกับ 'การปรับปรุงผลิตภัณฑ์ (Product Revision)'?",
+                options: [
+                    "Reliability (ความน่าเชื่อถือ)",
+                    "Usability (ความง่ายในการใช้งาน)",
+                    "Maintainability (ความสามารถในการบำรุงรักษา)",
+                    "Efficiency (ประสิทธิภาพ)"
+                ],
+                correct: 2
+            },
+            {
+                question: "หลักการออกแบบที่เรียกว่า 'Abstraction' คืออะไร?",
+                options: [
+                    "การแบ่งซอฟต์แวร์ออกเป็นส่วนย่อยๆ ที่ทำงานเป็นอิสระ",
+                    "การซ่อนรายละเอียดการทำงานภายในโมดูล",
+                    "การลดความซับซ้อนโดยการมองเฉพาะสาระสำคัญของปัญหา",
+                    "การปรับปรุงโครงสร้างโค้ดโดยไม่เปลี่ยนพฤติกรรม"
+                ],
+                correct: 2
+            },
+            {
+                question: "การออกแบบโมดูลที่ดีควรมีลักษณะ Cohesion และ Coupling อย่างไร?",
+                options: [
+                    "High Cohesion, High Coupling",
+                    "Low Cohesion, Low Coupling",
+                    "High Cohesion, Low Coupling",
+                    "Low Cohesion, High Coupling"
+                ],
+                correct: 2
+            },
+            {
+                question: "การปรับปรุงโครงสร้างของโค้ดที่มีอยู่โดยไม่เปลี่ยนแปลงพฤติกรรมการทำงานภายนอกเรียกว่าอะไร?",
+                options: [
+                    "Refinement",
+                    "Refactoring",
+                    "Abstraction",
+                    "Modularity"
+                ],
+                correct: 1
+            },
+            {
+                question: "Class Diagram เป็นแบบจำลองที่ใช้ในการออกแบบระดับใด?",
+                options: [
+                    "Data/Class Design",
+                    "Architectural Design",
+                    "Interface Design",
+                    "Component-Level Design"
+                ],
+                correct: 0
+            },
+            {
+                question: "แบบจำลองใดที่ใช้แสดงสถาปัตยกรรมทางกายภาพของระบบ เช่น ฮาร์ดแวร์และซอฟต์แวร์ที่ติดตั้งอยู่?",
+                options: [
+                    "Component Diagram",
+                    "Deployment Diagram",
+                    "Object Diagram",
+                    "Class Diagram"
+                ],
+                correct: 1
+            },
+            {
+                question: "การออกแบบเชิงกระบวนคำสั่ง (Procedural Design) สามารถใช้เครื่องมือใดในการแสดงผล?",
+                options: [
+                    "Use Case Diagram",
+                    "Flowchart",
+                    "Class Diagram",
+                    "ER Diagram"
+                ],
+                correct: 1
+            },
+            {
+                question: "'A-kind-of' เป็นความสัมพันธ์ประเภทใดใน Class Diagram?",
+                options: [
+                    "Generalization",
+                    "Aggregation",
+                    "Association",
+                    "Composition"
+                ],
+                correct: 0
+            },
+            {
+                question: "ข้อใดคือความหมายของ 'Modularity' ในหลักการออกแบบ?",
+                options: [
+                    "การซ่อนข้อมูลเพื่อป้องกันการเข้าถึงโดยไม่จำเป็น",
+                    "การนำรูปแบบการแก้ปัญหาที่เคยใช้มาใช้ซ้ำ",
+                    "การแบ่งซอฟต์แวร์ออกเป็นหน่วยย่อยๆ ที่จัดการได้ง่าย",
+                    "การมองภาพรวมของโครงสร้างสถาปัตยกรรม"
+                ],
+                correct: 2
+            },
+            {
+                question: "Sequence Diagram ใช้แสดงอะไร?",
+                options: [
+                    "โครงสร้างของคลาส",
+                    "การไหลของข้อมูล",
+                    "ลำดับการปฏิสัมพันธ์ระหว่าง Object ตามเวลา",
+                    "สถานะต่างๆ ของ Object"
+                ],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        const answers = new Array(questions.length).fill(null); // Track user answers
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options');
+        const feedback = document.getElementById('feedback');
+        const nextButton = document.getElementById('next-button');
+        const prevButton = document.getElementById('prev-button');
+        const scoreDisplay = document.getElementById('score');
+        const progress = document.getElementById('progress');
+
+        function updateScoreDisplay() {
+            scoreDisplay.textContent = `คะแนน: ${score}/${questions.length}`;
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            questionText.textContent = `ข้อ ${currentQuestion + 1}: ${q.question}`;
+            optionsContainer.innerHTML = '';
+            feedback.textContent = '';
+            nextButton.classList.add('hidden');
+            prevButton.disabled = currentQuestion === 0;
+
+            q.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.classList.add('answer-option', 'w-full', 'p-2', 'border', 'rounded', 'bg-gray-200', 'hover:bg-gray-300');
+                if (answers[currentQuestion] !== null) {
+                    if (index === answers[currentQuestion]) {
+                        button.classList.add(index === q.correct ? 'correct' : 'incorrect');
+                    }
+                    if (index === q.correct) {
+                        button.classList.add('correct');
+                    }
+                    button.disabled = true;
+                } else {
+                    button.addEventListener('click', () => checkAnswer(index));
+                }
+                optionsContainer.appendChild(button);
+            });
+
+            if (answers[currentQuestion] !== null) {
+                if (answers[currentQuestion] === q.correct) {
+                    feedback.textContent = 'ถูกต้อง!';
+                    feedback.classList.add('text-green-600');
+                } else {
+                    feedback.textContent = `ผิด! คำตอบที่ถูกต้องคือ: ${q.options[q.correct]}`;
+                    feedback.classList.add('text-red-600');
+                }
+                nextButton.classList.remove('hidden');
+            }
+
+            progress.textContent = `ข้อ ${currentQuestion + 1} จาก ${questions.length}`;
+            updateScoreDisplay();
+        }
+
+        function checkAnswer(selectedIndex) {
+            const q = questions[currentQuestion];
+            const buttons = optionsContainer.getElementsByTagName('button');
+
+            answers[currentQuestion] = selectedIndex;
+            if (selectedIndex === q.correct) {
+                score++;
+                buttons[selectedIndex].classList.add('correct');
+                feedback.textContent = 'ถูกต้อง!';
+                feedback.classList.add('text-green-600');
+                setTimeout(() => {
+                    currentQuestion++;
+                    if (currentQuestion < questions.length) {
+                        loadQuestion();
+                    } else {
+                        questionText.textContent = `ยินดีด้วย! คุณทำแบบทดสอบครบทุกข้อแล้ว คะแนนของคุณ: ${score}/${questions.length}`;
+                        optionsContainer.innerHTML = '';
+                        feedback.textContent = '';
+                        progress.textContent = '';
+                        prevButton.disabled = true;
+                        nextButton.classList.add('hidden');
+                    }
+                }, 1000);
+            } else {
+                buttons[selectedIndex].classList.add('incorrect');
+                buttons[q.correct].classList.add('correct');
+                feedback.textContent = `ผิด! คำตอบที่ถูกต้องคือ: ${q.options[q.correct]}`;
+                feedback.classList.add('text-red-600');
+                nextButton.classList.remove('hidden');
+            }
+
+            for (let button of buttons) {
+                button.disabled = true;
+            }
+
+            updateScoreDisplay();
+        }
+
+        nextButton.addEventListener('click', () => {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                questionText.textContent = `ยินดีด้วย! คุณทำแบบทดสอบครบทุกข้อแล้ว คะแนนของคุณ: ${score}/${questions.length}`;
+                optionsContainer.innerHTML = '';
+                feedback.textContent = '';
+                progress.textContent = '';
+                prevButton.disabled = true;
+                nextButton.classList.add('hidden');
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        });
+
+        loadQuestion();
+    </script>
+</body>
+</html>
